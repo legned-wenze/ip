@@ -1,11 +1,10 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Eva {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         System.out.println("Hello! I'm Eva.");
         System.out.println("What can I do for you?");
@@ -20,8 +19,9 @@ public class Eva {
 
                 } else if (input.equals("list")) {
                     System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < taskCount; i++) {
-                        System.out.println((i + 1) + "." + tasks[i]);
+
+                    for (int i = 0; i < tasks.size(); i++) {
+                        System.out.println((i + 1) + "." + tasks.get(i));
                     }
 
                 } else if (input.startsWith("mark")) {
@@ -32,15 +32,16 @@ public class Eva {
 
                     int taskNumber = Integer.parseInt(input.substring(5));
 
-                    if (taskNumber < 1 || taskNumber > taskCount) {
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
                         throw new EvaException(
                                 "That task number does not exist.");
                     }
 
-                    tasks[taskNumber - 1].markAsDone();
+                    Task task = tasks.get(taskNumber - 1);
+                    task.markAsDone();
 
                     System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks[taskNumber - 1]);
+                    System.out.println("  " + task);
 
                 } else if (input.startsWith("unmark")) {
                     if (!input.matches("unmark \\d+")) {
@@ -50,16 +51,37 @@ public class Eva {
 
                     int taskNumber = Integer.parseInt(input.substring(7));
 
-                    if (taskNumber < 1 || taskNumber > taskCount) {
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
                         throw new EvaException(
                                 "That task number does not exist.");
                     }
 
-                    tasks[taskNumber - 1].markAsNotDone();
+                    Task task = tasks.get(taskNumber - 1);
+                    task.markAsNotDone();
 
                     System.out.println(
                             "OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks[taskNumber - 1]);
+                    System.out.println("  " + task);
+
+                } else if (input.startsWith("delete")) {
+                    if (!input.matches("delete \\d+")) {
+                        throw new EvaException(
+                                "Please specify a valid task number to delete.");
+                    }
+
+                    int taskNumber = Integer.parseInt(input.substring(7));
+
+                    if (taskNumber < 1 || taskNumber > tasks.size()) {
+                        throw new EvaException(
+                                "That task number does not exist.");
+                    }
+
+                    Task removedTask = tasks.remove(taskNumber - 1);
+
+                    System.out.println("Noted. I've removed this task:");
+                    System.out.println("  " + removedTask);
+                    System.out.println(
+                            "Now you have " + tasks.size() + " tasks in the list.");
 
                 } else if (input.startsWith("todo")) {
                     if (!input.startsWith("todo ")
@@ -70,15 +92,12 @@ public class Eva {
 
                     String description = input.substring(5).trim();
 
-                    tasks[taskCount] = new Todo(description);
+                    tasks.add(new Todo(description));
 
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount]);
-
-                    taskCount++;
-
+                    System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println(
-                            "Now you have " + taskCount + " tasks in the list.");
+                            "Now you have " + tasks.size() + " tasks in the list.");
 
                 } else if (input.startsWith("deadline")) {
                     if (!input.startsWith("deadline ")
@@ -105,15 +124,12 @@ public class Eva {
                                 "A deadline needs both a description and /by time.");
                     }
 
-                    tasks[taskCount] = new Deadline(description, by);
+                    tasks.add(new Deadline(description, by));
 
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount]);
-
-                    taskCount++;
-
+                    System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println(
-                            "Now you have " + taskCount + " tasks in the list.");
+                            "Now you have " + tasks.size() + " tasks in the list.");
 
                 } else if (input.startsWith("event")) {
                     if (!input.startsWith("event ")
@@ -148,16 +164,12 @@ public class Eva {
                                 "An event needs a description, /from time, and /to time.");
                     }
 
-                    tasks[taskCount] =
-                            new Event(description, from, to);
+                    tasks.add(new Event(description, from, to));
 
                     System.out.println("Got it. I've added this task:");
-                    System.out.println("  " + tasks[taskCount]);
-
-                    taskCount++;
-
+                    System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println(
-                            "Now you have " + taskCount + " tasks in the list.");
+                            "Now you have " + tasks.size() + " tasks in the list.");
 
                 } else {
                     throw new EvaException(
