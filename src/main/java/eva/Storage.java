@@ -15,13 +15,27 @@ import eva.task.Event;
 import eva.task.Task;
 import eva.task.Todo;
 
+/**
+ * Loads tasks from and saves tasks to a local data file.
+ */
 public class Storage {
     private final Path filePath;
 
+    /**
+     * Creates storage that uses the specified file.
+     *
+     * @param filePath Path of the task data file.
+     */
     public Storage(String filePath) {
         this.filePath = Path.of(filePath);
     }
 
+    /**
+     * Loads saved tasks from the data file.
+     *
+     * @return Tasks loaded from the file, or an empty list if it does not exist.
+     * @throws EvaException If the task data cannot be loaded.
+     */
     public ArrayList<Task> load() throws EvaException {
         ArrayList<Task> tasks = new ArrayList<>();
 
@@ -43,6 +57,12 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves all tasks to the data file.
+     *
+     * @param tasks Tasks to save.
+     * @throws EvaException If the tasks cannot be saved.
+     */
     public void save(TaskList tasks) throws EvaException {
         try {
             Files.createDirectories(filePath.getParent());

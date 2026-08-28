@@ -1,6 +1,13 @@
 package eva;
 
+/**
+ * Parses user input into commands that can be executed by Eva.
+ */
 public class Parser {
+
+    /**
+     * Represents the supported command types.
+     */
     public enum CommandType {
         BYE,
         LIST,
@@ -12,6 +19,13 @@ public class Parser {
         EVENT
     }
 
+    /**
+     * Parses the specified user input.
+     *
+     * @param input User command to parse.
+     * @return Parsed representation of the command.
+     * @throws EvaException If the command format is invalid or unknown.
+     */
     public static ParsedCommand parse(String input) throws EvaException {
         if (input.equals("bye")) {
             return new ParsedCommand(CommandType.BYE);
@@ -129,6 +143,9 @@ public class Parser {
                 "I'm sorry, but I don't know what that means.");
     }
 
+    /**
+     * Stores the type and arguments of a parsed command.
+     */
     public static class ParsedCommand {
         private final CommandType type;
         private final int taskNumber;
@@ -150,14 +167,30 @@ public class Parser {
             this.values = values;
         }
 
+        /**
+         * Returns the type of this command.
+         *
+         * @return Command type.
+         */
         public CommandType getType() {
             return type;
         }
 
+        /**
+         * Returns the task number supplied with this command.
+         *
+         * @return Task number.
+         */
         public int getTaskNumber() {
             return taskNumber;
         }
 
+        /**
+         * Returns a command argument at the specified position.
+         *
+         * @param index Position of the command argument.
+         * @return Command argument at the specified position.
+         */
         public String getValue(int index) {
             return values[index];
         }
