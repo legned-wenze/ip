@@ -1,10 +1,95 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Eva {
+    private static final Path DATA_FILE = Path.of("data", "eva.txt");
+
+    private static ArrayList<Task> loadTasks() {
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        if (!Files.exists(DATA_FILE)) {
+            return tasks;
+        }
+
+        try {
+            for (String line : Files.readAllLines(DATA_FILE)) {
+                if (!line.isBlank()) {
+                    tasks.add(parseStoredTask(line));
+                }
+            }
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println(
+                    "OOPS!!! I could not load the saved tasks: "
+                            + e.getMessage());
+        }
+
+        return tasks;
+    }
+
+    private static Task parseStoredTask(String line) {
+        String[] parts = line.split(" \\| ", -1);
+
+        if (parts.length < 3) {
+            throw new IllegalArgumentException("Invalid task data.");
+        }
+
+        Task task;
+
+        switch (parts[0]) {
+            case "T":
+                if (parts.length != 3) {
+                    throw new IllegalArgumentException("Invalid todo data.");
+                }
+                task = new Todo(parts[2]);
+                break;
+            case "D":
+                if (parts.length != 4) {
+                    throw new IllegalArgumentException("Invalid deadline data.");
+                }
+                task = new Deadline(parts[2], parts[3]);
+                break;
+            case "E":
+                if (parts.length != 5) {
+                    throw new IllegalArgumentException("Invalid event data.");
+                }
+                task = new Event(parts[2], parts[3], parts[4]);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown task type.");
+        }
+
+        if (parts[1].equals("1")) {
+            task.markAsDone();
+        } else if (!parts[1].equals("0")) {
+            throw new IllegalArgumentException("Invalid task status.");
+        }
+
+        return task;
+    }
+
+    private static void saveTasks(ArrayList<Task> tasks) {
+        try {
+            Files.createDirectories(DATA_FILE.getParent());
+
+            ArrayList<String> lines = new ArrayList<>();
+            for (Task task : tasks) {
+                lines.add(task.toFileString());
+            }
+
+            Files.write(DATA_FILE, lines);
+        } catch (IOException e) {
+            System.out.println(
+                    "OOPS!!! I could not save the tasks: "
+                            + e.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
+        ArrayList<Task> tasks = loadTasks();
 
         System.out.println("Hello! I'm Eva.");
         System.out.println("What can I do for you?");
@@ -14,6 +99,7 @@ public class Eva {
 
             try {
                 if (input.equals("bye")) {
+                    saveTasks(tasks);
                     System.out.println("Bye. Hope to see you again soon!");
                     break;
 
@@ -39,8 +125,10 @@ public class Eva {
 
                     Task task = tasks.get(taskNumber - 1);
                     task.markAsDone();
+                    saveTasks(tasks);
 
-                    System.out.println("Nice! I've marked this task as done:");
+                    System.out.println(
+                            "Nice! I've marked this task as done:");
                     System.out.println("  " + task);
 
                 } else if (input.startsWith("unmark")) {
@@ -58,6 +146,7 @@ public class Eva {
 
                     Task task = tasks.get(taskNumber - 1);
                     task.markAsNotDone();
+                    saveTasks(tasks);
 
                     System.out.println(
                             "OK, I've marked this task as not done yet:");
@@ -77,11 +166,13 @@ public class Eva {
                     }
 
                     Task removedTask = tasks.remove(taskNumber - 1);
+                    saveTasks(tasks);
 
                     System.out.println("Noted. I've removed this task:");
                     System.out.println("  " + removedTask);
                     System.out.println(
-                            "Now you have " + tasks.size() + " tasks in the list.");
+                            "Now you have " + tasks.size()
+                                    + " tasks in the list.");
 
                 } else if (input.startsWith("todo")) {
                     if (!input.startsWith("todo ")
@@ -93,11 +184,13 @@ public class Eva {
                     String description = input.substring(5).trim();
 
                     tasks.add(new Todo(description));
+                    saveTasks(tasks);
 
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println(
-                            "Now you have " + tasks.size() + " tasks in the list.");
+                            "Now you have " + tasks.size()
+                                    + " tasks in the list.");
 
                 } else if (input.startsWith("deadline")) {
                     if (!input.startsWith("deadline ")
@@ -121,15 +214,18 @@ public class Eva {
 
                     if (description.isEmpty() || by.isEmpty()) {
                         throw new EvaException(
-                                "A deadline needs both a description and /by time.");
+                                "A deadline needs both a description "
+                                        + "and /by time.");
                     }
 
                     tasks.add(new Deadline(description, by));
+                    saveTasks(tasks);
 
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println(
-                            "Now you have " + tasks.size() + " tasks in the list.");
+                            "Now you have " + tasks.size()
+                                    + " tasks in the list.");
 
                 } else if (input.startsWith("event")) {
                     if (!input.startsWith("event ")
@@ -161,15 +257,18 @@ public class Eva {
                             || from.isEmpty()
                             || to.isEmpty()) {
                         throw new EvaException(
-                                "An event needs a description, /from time, and /to time.");
+                                "An event needs a description, /from time, "
+                                        + "and /to time.");
                     }
 
                     tasks.add(new Event(description, from, to));
+                    saveTasks(tasks);
 
                     System.out.println("Got it. I've added this task:");
                     System.out.println("  " + tasks.get(tasks.size() - 1));
                     System.out.println(
-                            "Now you have " + tasks.size() + " tasks in the list.");
+                            "Now you have " + tasks.size()
+                                    + " tasks in the list.");
 
                 } else {
                     throw new EvaException(
