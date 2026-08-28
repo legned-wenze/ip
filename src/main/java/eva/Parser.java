@@ -1,3 +1,5 @@
+package eva;
+
 public class Parser {
     public enum CommandType {
         BYE,
