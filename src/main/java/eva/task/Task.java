@@ -23,6 +23,10 @@ public abstract class Task {
         isDone = false;
     }
 
+    public boolean containsKeyword(String keyword) {
+        return description.toLowerCase().contains(keyword.toLowerCase());
+    }
+
     protected String getFileStatus() {
         return isDone ? "1" : "0";
     }

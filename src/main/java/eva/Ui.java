@@ -30,6 +30,14 @@ public class Ui {
         }
     }
 
+    public void showMatchingTasks(TaskList tasks) {
+        System.out.println("Here are the matching tasks in your list:");
+
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + "." + tasks.getTaskAt(i));
+        }
+    }
+
     public void showAddedTask(Task task, int taskCount) {
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);

@@ -94,6 +94,12 @@ public class Eva {
                 ui.showAddedTask(event, tasks.size());
                 return false;
 
+            case FIND:
+                TaskList matchingTasks =
+                        tasks.find(command.getValue(0));
+                ui.showMatchingTasks(matchingTasks);
+                return false;
+
             default:
                 throw new EvaException("Unknown command.");
         }

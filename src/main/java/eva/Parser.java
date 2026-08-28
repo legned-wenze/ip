@@ -9,7 +9,8 @@ public class Parser {
         DELETE,
         TODO,
         DEADLINE,
-        EVENT
+        EVENT,
+        FIND
     }
 
     public static ParsedCommand parse(String input) throws EvaException {
@@ -123,6 +124,17 @@ public class Parser {
 
             return new ParsedCommand(
                     CommandType.EVENT, description, from, to);
+        }
+
+        if (input.startsWith("find")) {
+            if (!input.startsWith("find ")
+                    || input.substring(4).trim().isEmpty()) {
+                throw new EvaException(
+                        "Please specify a keyword to find.");
+            }
+
+            String keyword = input.substring(5).trim();
+            return new ParsedCommand(CommandType.FIND, keyword);
         }
 
         throw new EvaException(
