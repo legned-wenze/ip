@@ -94,6 +94,24 @@ public class TaskList {
         return task;
     }
 
+    /**
+     * Finds tasks whose descriptions contain the specified keyword.
+     *
+     * @param keyword Keyword to search for.
+     * @return Task list containing the matching tasks.
+     */
+    public TaskList find(String keyword) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+
+        for (Task task : tasks) {
+            if (task.containsKeyword(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+
+        return new TaskList(matchingTasks);
+    }
+
     private void validateTaskNumber(int taskNumber) throws EvaException {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
             throw new EvaException("That task number does not exist.");

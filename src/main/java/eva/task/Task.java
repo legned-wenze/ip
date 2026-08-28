@@ -44,6 +44,16 @@ public abstract class Task {
     }
 
     /**
+     * Checks whether the task description contains the specified keyword.
+     *
+     * @param keyword Keyword to search for.
+     * @return True if the task description contains the keyword.
+     */
+    public boolean containsKeyword(String keyword) {
+        return description.toLowerCase().contains(keyword.toLowerCase());
+    }
+
+    /**
      * Returns the status value used in the data file.
      *
      * @return {@code 1} if completed, or {@code 0} otherwise.
