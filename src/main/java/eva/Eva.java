@@ -5,11 +5,19 @@ import eva.task.Event;
 import eva.task.Task;
 import eva.task.Todo;
 
+/**
+ * Runs the Eva task management application.
+ */
 public class Eva {
     private final Storage storage;
     private final Ui ui;
     private TaskList tasks;
 
+    /**
+     * Creates an Eva application that stores tasks at the specified path.
+     *
+     * @param filePath Path of the task data file.
+     */
     public Eva(String filePath) {
         this.ui = new Ui();
         this.storage = new Storage(filePath);
@@ -22,6 +30,9 @@ public class Eva {
         }
     }
 
+    /**
+     * Starts the command-reading loop and processes commands until exit.
+     */
     public void run() {
         ui.showWelcome();
         boolean isExit = false;
@@ -99,6 +110,11 @@ public class Eva {
         }
     }
 
+    /**
+     * Starts the Eva application.
+     *
+     * @param args Command-line arguments.
+     */
     public static void main(String[] args) {
         new Eva("data/eva.txt").run();
     }
