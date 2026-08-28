@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import eva.task.Task;
 
-import java.util.ArrayList;
-
 /**
  * Stores and manages the tasks known to Eva.
  */

@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 import eva.task.Task;
 
-import java.util.Scanner;
-
 public class Ui {
     private final Scanner scanner;
 
@@ -14,7 +12,7 @@ public class Ui {
     }
 
     public void showWelcome() {
-        System.out.println("Hello! I'm eva.Eva.");
+        System.out.println("Hello! I'm Eva.");
         System.out.println("What can I do for you?");
     }
 
