@@ -1,4 +1,4 @@
-public class Task {
+public abstract class Task {
     protected String description;
     protected boolean isDone;
     protected TaskType type;
@@ -20,6 +20,12 @@ public class Task {
     public void markAsNotDone() {
         isDone = false;
     }
+
+    protected String getFileStatus() {
+        return isDone ? "1" : "0";
+    }
+
+    public abstract String toFileString();
 
     @Override
     public String toString() {
