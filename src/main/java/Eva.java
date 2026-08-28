@@ -275,7 +275,7 @@ public class Eva {
                             "I'm sorry, but I don't know what that means.");
                 }
 
-            } catch (EvaException e) {
+            } catch (EvaException | IllegalArgumentException e) {
                 System.out.println("OOPS!!! " + e.getMessage());
             }
         }
