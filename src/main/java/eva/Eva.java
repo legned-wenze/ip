@@ -25,7 +25,7 @@ public class Eva {
         try {
             this.tasks = new TaskList(storage.load());
         } catch (EvaException e) {
-            ui.showError(e.getMessage());
+            ui.showResponse("OOPS!!! " + e.getMessage());
             this.tasks = new TaskList();
         }
     }
@@ -38,62 +38,64 @@ public class Eva {
         boolean isExit = false;
 
         while (!isExit) {
-            try {
-                String input = ui.readCommand();
-                Parser.ParsedCommand command = Parser.parse(input);
-                isExit = execute(command);
-            } catch (EvaException | IllegalArgumentException e) {
-                ui.showError(e.getMessage());
-            }
+            String input = ui.readCommand();
+            ui.showResponse(getResponse(input));
+            isExit = input.equals("bye");
         }
 
         ui.close();
     }
 
-    private boolean execute(Parser.ParsedCommand command)
-            throws EvaException {
+    /**
+     * Processes a command and returns Eva's response.
+     *
+     * @param input User command.
+     * @return Eva's response to the command.
+     */
+    public String getResponse(String input) {
+        try {
+            return execute(Parser.parse(input));
+        } catch (EvaException | IllegalArgumentException e) {
+            return "OOPS!!! " + e.getMessage();
+        }
+    }
+
+    private String execute(Parser.ParsedCommand command) throws EvaException {
         switch (command.getType()) {
             case BYE:
                 storage.save(tasks);
-                ui.showBye();
-                return true;
+                return ui.getByeMessage();
 
             case LIST:
-                ui.showTaskList(tasks);
-                return false;
+                return ui.getTaskListMessage(tasks);
 
             case MARK:
                 Task markedTask = tasks.mark(command.getTaskNumber());
                 storage.save(tasks);
-                ui.showMarkedTask(markedTask);
-                return false;
+                return ui.getMarkedTaskMessage(markedTask);
 
             case UNMARK:
                 Task unmarkedTask = tasks.unmark(command.getTaskNumber());
                 storage.save(tasks);
-                ui.showUnmarkedTask(unmarkedTask);
-                return false;
+                return ui.getUnmarkedTaskMessage(unmarkedTask);
 
             case DELETE:
                 Task deletedTask = tasks.delete(command.getTaskNumber());
                 storage.save(tasks);
-                ui.showDeletedTask(deletedTask, tasks.size());
-                return false;
+                return ui.getDeletedTaskMessage(deletedTask, tasks.size());
 
             case TODO:
                 Task todo = new Todo(command.getValue(0));
                 tasks.add(todo);
                 storage.save(tasks);
-                ui.showAddedTask(todo, tasks.size());
-                return false;
+                return ui.getAddedTaskMessage(todo, tasks.size());
 
             case DEADLINE:
                 Task deadline = new Deadline(
                         command.getValue(0), command.getValue(1));
                 tasks.add(deadline);
                 storage.save(tasks);
-                ui.showAddedTask(deadline, tasks.size());
-                return false;
+                return ui.getAddedTaskMessage(deadline, tasks.size());
 
             case EVENT:
                 Task event = new Event(
@@ -102,14 +104,12 @@ public class Eva {
                         command.getValue(2));
                 tasks.add(event);
                 storage.save(tasks);
-                ui.showAddedTask(event, tasks.size());
-                return false;
+                return ui.getAddedTaskMessage(event, tasks.size());
 
             case FIND:
                 TaskList matchingTasks =
                         tasks.find(command.getValue(0));
-                ui.showMatchingTasks(matchingTasks);
-                return false;
+                return ui.getMatchingTasksMessage(matchingTasks);
 
             default:
                 throw new EvaException("Unknown command.");
