@@ -21,8 +21,9 @@ public class Ui {
      * Displays Eva's welcome message.
      */
     public void showWelcome() {
-        System.out.println("Hello! I'm Eva.");
-        System.out.println("What can I do for you?");
+        System.out.println(joinLines(
+                "Hello! I'm Eva.",
+                "What can I do for you?"));
     }
 
     /**
@@ -72,8 +73,10 @@ public class Ui {
      * @return Task-added confirmation.
      */
     public String getAddedTaskMessage(Task task, int taskCount) {
-        return "Got it. I've added this task:\n  " + task
-                + getTaskCountMessage(taskCount);
+        return joinLines(
+                "Got it. I've added this task:",
+                "  " + task,
+                getTaskCountMessage(taskCount));
     }
 
     /**
@@ -84,8 +87,10 @@ public class Ui {
      * @return Task-deleted confirmation.
      */
     public String getDeletedTaskMessage(Task task, int taskCount) {
-        return "Noted. I've removed this task:\n  " + task
-                + getTaskCountMessage(taskCount);
+        return joinLines(
+                "Noted. I've removed this task:",
+                "  " + task,
+                getTaskCountMessage(taskCount));
     }
 
     /**
@@ -95,7 +100,9 @@ public class Ui {
      * @return Task-marked confirmation.
      */
     public String getMarkedTaskMessage(Task task) {
-        return "Nice! I've marked this task as done:\n  " + task;
+        return joinLines(
+                "Nice! I've marked this task as done:",
+                "  " + task);
     }
 
     /**
@@ -105,7 +112,9 @@ public class Ui {
      * @return Task-unmarked confirmation.
      */
     public String getUnmarkedTaskMessage(Task task) {
-        return "OK, I've marked this task as not done yet:\n  " + task;
+        return joinLines(
+                "OK, I've marked this task as not done yet:",
+                "  " + task);
     }
 
     /**
@@ -136,6 +145,16 @@ public class Ui {
     }
 
     private String getTaskCountMessage(int taskCount) {
-        return "\nNow you have " + taskCount + " tasks in the list.";
+        return "Now you have " + taskCount + " tasks in the list.";
+    }
+
+    /**
+     * Joins the supplied lines into one platform-independent message.
+     *
+     * @param lines Lines to join in order.
+     * @return Lines separated by the system line separator.
+     */
+    private static String joinLines(String... lines) {
+        return String.join(System.lineSeparator(), lines);
     }
 }
