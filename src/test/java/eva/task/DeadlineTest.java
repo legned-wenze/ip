@@ -30,8 +30,6 @@ public class DeadlineTest {
 
     @Test
     void constructor_invalidDate_throwsIllegalArgumentException() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> new Deadline("submit project", "29-08-2026"));
+        assertThrows(IllegalArgumentException.class, () -> new Deadline("submit project", "29-08-2026"));
     }
 }

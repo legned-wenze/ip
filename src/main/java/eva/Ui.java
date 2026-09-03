@@ -4,6 +4,9 @@ import java.util.Scanner;
 
 import eva.task.Task;
 
+/**
+ * Handles input and output for Eva's text-based interface.
+ */
 public class Ui {
     private final Scanner scanner;
 
@@ -11,6 +14,9 @@ public class Ui {
         this.scanner = new Scanner(System.in);
     }
 
+    /**
+     * Displays Eva's welcome message.
+     */
     public void showWelcome() {
         System.out.println("Hello! I'm Eva.");
         System.out.println("What can I do for you?");
@@ -20,6 +26,11 @@ public class Ui {
         return scanner.nextLine();
     }
 
+    /**
+     * Displays every task in the supplied task list.
+     *
+     * @param tasks Tasks to display.
+     */
     public void showTaskList(TaskList tasks) {
         System.out.println("Here are the tasks in your list:");
 
@@ -41,23 +52,45 @@ public class Ui {
         }
     }
 
+    /**
+     * Displays a newly added task and the updated task count.
+     *
+     * @param task Added task.
+     * @param taskCount Updated number of tasks.
+     */
     public void showAddedTask(Task task, int taskCount) {
         System.out.println("Got it. I've added this task:");
         System.out.println("  " + task);
         showTaskCount(taskCount);
     }
 
+    /**
+     * Displays a deleted task and the updated task count.
+     *
+     * @param task Deleted task.
+     * @param taskCount Updated number of tasks.
+     */
     public void showDeletedTask(Task task, int taskCount) {
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + task);
         showTaskCount(taskCount);
     }
 
+    /**
+     * Displays the task that was marked as completed.
+     *
+     * @param task Marked task.
+     */
     public void showMarkedTask(Task task) {
         System.out.println("Nice! I've marked this task as done:");
         System.out.println("  " + task);
     }
 
+    /**
+     * Displays the task that was marked as incomplete.
+     *
+     * @param task Unmarked task.
+     */
     public void showUnmarkedTask(Task task) {
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println("  " + task);

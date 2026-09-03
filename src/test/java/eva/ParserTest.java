@@ -26,15 +26,11 @@ public class ParserTest {
 
     @Test
     void parseDeadline_missingBy_throwsEvaException() {
-        assertThrows(
-                EvaException.class,
-                () -> Parser.parse("deadline submit project"));
+        assertThrows(EvaException.class, () -> Parser.parse("deadline submit project"));
     }
 
     @Test
     void parseUnknownCommand_throwsEvaException() {
-        assertThrows(
-                EvaException.class,
-                () -> Parser.parse("hello"));
+        assertThrows(EvaException.class, () -> Parser.parse("hello"));
     }
 }
