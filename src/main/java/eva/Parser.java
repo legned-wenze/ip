@@ -37,122 +37,132 @@ public class Parser {
         }
 
         if (input.startsWith("mark")) {
-            if (!input.matches("mark \\d+")) {
-                throw new EvaException(
-                        "Please specify a valid task number to mark.");
-            }
-
-            int taskNumber = Integer.parseInt(input.substring(5));
-            return new ParsedCommand(CommandType.MARK, taskNumber);
+            return parseTaskNumber(input, "mark", CommandType.MARK);
         }
 
         if (input.startsWith("unmark")) {
-            if (!input.matches("unmark \\d+")) {
-                throw new EvaException(
-                        "Please specify a valid task number to unmark.");
-            }
-
-            int taskNumber = Integer.parseInt(input.substring(7));
-            return new ParsedCommand(CommandType.UNMARK, taskNumber);
+            return parseTaskNumber(input, "unmark", CommandType.UNMARK);
         }
 
         if (input.startsWith("delete")) {
-            if (!input.matches("delete \\d+")) {
-                throw new EvaException(
-                        "Please specify a valid task number to delete.");
-            }
-
-            int taskNumber = Integer.parseInt(input.substring(7));
-            return new ParsedCommand(CommandType.DELETE, taskNumber);
+            return parseTaskNumber(input, "delete", CommandType.DELETE);
         }
 
         if (input.startsWith("todo")) {
-            if (!input.startsWith("todo ")
-                    || input.substring(4).trim().isEmpty()) {
-                throw new EvaException(
-                        "The description of a todo cannot be empty.");
-            }
-
-            String description = input.substring(5).trim();
-            return new ParsedCommand(CommandType.TODO, description);
+            return parseTodo(input);
         }
 
         if (input.startsWith("deadline")) {
-            if (!input.startsWith("deadline ")
-                    || input.substring(8).trim().isEmpty()) {
-                throw new EvaException(
-                        "The description of a deadline cannot be empty.");
-            }
-
-            String content = input.substring(9).trim();
-            int byIndex = content.indexOf(" /by ");
-
-            if (byIndex == -1) {
-                throw new EvaException("A deadline must contain /by.");
-            }
-
-            String description = content.substring(0, byIndex).trim();
-            String by = content.substring(byIndex + 5).trim();
-
-            if (description.isEmpty() || by.isEmpty()) {
-                throw new EvaException(
-                        "A deadline needs both a description and /by time.");
-            }
-
-            return new ParsedCommand(
-                    CommandType.DEADLINE, description, by);
+            return parseDeadline(input);
         }
 
         if (input.startsWith("event")) {
-            if (!input.startsWith("event ")
-                    || input.substring(5).trim().isEmpty()) {
-                throw new EvaException(
-                        "The description of an event cannot be empty.");
-            }
-
-            String content = input.substring(6).trim();
-            int fromIndex = content.indexOf(" /from ");
-            int toIndex = content.indexOf(" /to ");
-
-            if (fromIndex == -1
-                    || toIndex == -1
-                    || toIndex <= fromIndex) {
-                throw new EvaException(
-                        "An event must contain /from and /to.");
-            }
-
-            String description =
-                    content.substring(0, fromIndex).trim();
-            String from =
-                    content.substring(fromIndex + 7, toIndex).trim();
-            String to =
-                    content.substring(toIndex + 5).trim();
-
-            if (description.isEmpty()
-                    || from.isEmpty()
-                    || to.isEmpty()) {
-                throw new EvaException(
-                        "An event needs a description, /from time, "
-                                + "and /to time.");
-            }
-
-            return new ParsedCommand(
-                    CommandType.EVENT, description, from, to);
+            return parseEvent(input);
         }
 
         if (input.startsWith("find")) {
-            if (!input.startsWith("find ")
-                    || input.substring(4).trim().isEmpty()) {
-                throw new EvaException(
-                        "Please specify a keyword to find.");
-            }
-
-            String keyword = input.substring(5).trim();
-            return new ParsedCommand(CommandType.FIND, keyword);
+            return parseFind(input);
         }
 
         throw new EvaException(
                 "I'm sorry, but I don't know what that means.");
+    }
+
+    private static ParsedCommand parseTaskNumber(
+            String input, String commandWord, CommandType commandType)
+            throws EvaException {
+        if (!input.matches(commandWord + " \\d+")) {
+            throw new EvaException(
+                    "Please specify a valid task number to "
+                            + commandWord + ".");
+        }
+
+        int taskNumber = Integer.parseInt(
+                input.substring(commandWord.length() + 1));
+        return new ParsedCommand(commandType, taskNumber);
+    }
+
+    private static ParsedCommand parseTodo(String input)
+            throws EvaException {
+        if (!input.startsWith("todo ")
+                || input.substring(4).trim().isEmpty()) {
+            throw new EvaException(
+                    "The description of a todo cannot be empty.");
+        }
+
+        String description = input.substring(5).trim();
+        return new ParsedCommand(CommandType.TODO, description);
+    }
+
+    private static ParsedCommand parseDeadline(String input)
+            throws EvaException {
+        if (!input.startsWith("deadline ")
+                || input.substring(8).trim().isEmpty()) {
+            throw new EvaException(
+                    "The description of a deadline cannot be empty.");
+        }
+
+        String content = input.substring(9).trim();
+        int byIndex = content.indexOf(" /by ");
+
+        if (byIndex == -1) {
+            throw new EvaException("A deadline must contain /by.");
+        }
+
+        String description = content.substring(0, byIndex).trim();
+        String by = content.substring(byIndex + 5).trim();
+
+        if (description.isEmpty() || by.isEmpty()) {
+            throw new EvaException(
+                    "A deadline needs both a description and /by time.");
+        }
+
+        return new ParsedCommand(CommandType.DEADLINE, description, by);
+    }
+
+    private static ParsedCommand parseEvent(String input)
+            throws EvaException {
+        if (!input.startsWith("event ")
+                || input.substring(5).trim().isEmpty()) {
+            throw new EvaException(
+                    "The description of an event cannot be empty.");
+        }
+
+        String content = input.substring(6).trim();
+        int fromIndex = content.indexOf(" /from ");
+        int toIndex = content.indexOf(" /to ");
+
+        if (fromIndex == -1
+                || toIndex == -1
+                || toIndex <= fromIndex) {
+            throw new EvaException(
+                    "An event must contain /from and /to.");
+        }
+
+        String description = content.substring(0, fromIndex).trim();
+        String from = content.substring(fromIndex + 7, toIndex).trim();
+        String to = content.substring(toIndex + 5).trim();
+
+        if (description.isEmpty() || from.isEmpty() || to.isEmpty()) {
+            throw new EvaException(
+                    "An event needs a description, /from time, "
+                            + "and /to time.");
+        }
+
+        return new ParsedCommand(
+                CommandType.EVENT, description, from, to);
+    }
+
+    private static ParsedCommand parseFind(String input)
+            throws EvaException {
+        if (!input.startsWith("find ")
+                || input.substring(4).trim().isEmpty()) {
+            throw new EvaException(
+                    "Please specify a keyword to find.");
+        }
+
+        String keyword = input.substring(5).trim();
+        return new ParsedCommand(CommandType.FIND, keyword);
     }
 
     /**
