@@ -24,6 +24,7 @@ public class TaskList {
      * @param tasks Initial tasks.
      */
     public TaskList(ArrayList<Task> tasks) {
+        assert tasks != null : "Task list should not be null";
         this.tasks = tasks;
     }
 
@@ -43,6 +44,8 @@ public class TaskList {
      * @return Task at the specified index.
      */
     public Task getTaskAt(int index) {
+        assert index >= 0 && index < tasks.size()
+                : "Task index should be within the task list";
         return tasks.get(index);
     }
 
@@ -52,6 +55,7 @@ public class TaskList {
      * @param task Task to add.
      */
     public void add(Task task) {
+        assert task != null : "Task to add should not be null";
         tasks.add(task);
     }
 
