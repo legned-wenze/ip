@@ -25,6 +25,13 @@ public class ParserTest {
     }
 
     @Test
+    void parseSort_validInput_returnsSortCommand() throws EvaException {
+        Parser.ParsedCommand command = Parser.parse("sort");
+
+        assertEquals(Parser.CommandType.SORT, command.getType());
+    }
+
+    @Test
     void parseDeadline_missingBy_throwsEvaException() {
         assertThrows(EvaException.class, () -> Parser.parse("deadline submit project"));
     }

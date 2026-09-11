@@ -111,6 +111,11 @@ public class Eva {
                         tasks.find(command.getValue(0));
                 return ui.getMatchingTasksMessage(matchingTasks);
 
+            case SORT:
+                tasks.sort();
+                storage.save(tasks);
+                return ui.getTaskListMessage(tasks);
+
             default:
                 throw new EvaException("Unknown command.");
         }

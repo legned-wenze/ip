@@ -17,7 +17,8 @@ public class Parser {
         TODO,
         DEADLINE,
         EVENT,
-        FIND
+        FIND,
+        SORT
     }
 
     /**
@@ -34,6 +35,10 @@ public class Parser {
 
         if (input.equals("list")) {
             return new ParsedCommand(CommandType.LIST);
+        }
+
+        if (input.equals("sort")) {
+            return new ParsedCommand(CommandType.SORT);
         }
 
         if (input.startsWith("mark")) {

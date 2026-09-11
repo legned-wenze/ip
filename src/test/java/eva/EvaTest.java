@@ -32,4 +32,19 @@ public class EvaTest {
                 "OOPS!!! I'm sorry, but I don't know what that means.",
                 eva.getResponse("hello"));
     }
+
+    @Test
+    void getResponse_sort_ordersDeadlinesChronologically() {
+        Eva eva = new Eva(tempDirectory.resolve("eva.txt").toString());
+        eva.getResponse("deadline submit report /by 2026-09-30");
+        eva.getResponse("deadline attend meeting /by 2026-09-15");
+
+        String response = eva.getResponse("sort");
+
+        assertEquals(
+                "Here are the tasks in your list:\n"
+                        + "1.[D][ ] attend meeting (by: Sep 15 2026)\n"
+                        + "2.[D][ ] submit report (by: Sep 30 2026)",
+                response.replace(System.lineSeparator(), "\n"));
+    }
 }

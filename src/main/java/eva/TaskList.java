@@ -3,6 +3,7 @@ package eva;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import eva.task.Deadline;
 import eva.task.Task;
 
 /**
@@ -111,6 +112,22 @@ public class TaskList {
                 .collect(Collectors.toCollection(ArrayList::new));
 
         return new TaskList(matchingTasks);
+    }
+
+    void sort() {
+        tasks.sort((first, second) -> {
+            if (first instanceof Deadline firstDeadline
+                    && second instanceof Deadline secondDeadline) {
+                return firstDeadline.getBy().compareTo(secondDeadline.getBy());
+            }
+            if (first instanceof Deadline) {
+                return -1;
+            }
+            if (second instanceof Deadline) {
+                return 1;
+            }
+            return 0;
+        });
     }
 
     private void validateTaskNumber(int taskNumber) throws EvaException {
