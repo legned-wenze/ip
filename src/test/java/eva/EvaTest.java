@@ -2,6 +2,8 @@ package eva;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
@@ -46,5 +48,20 @@ public class EvaTest {
                         + "1.[D][ ] attend meeting (by: Sep 15 2026)\n"
                         + "2.[D][ ] submit report (by: Sep 30 2026)",
                 response.replace(System.lineSeparator(), "\n"));
+    }
+
+    @Test
+    void getResponse_corruptDataDoesNotOverwriteFile() throws IOException {
+        Path dataFile = tempDirectory.resolve("eva.txt");
+        Files.writeString(dataFile, "not a task");
+        Eva eva = new Eva(dataFile.toString());
+
+        assertEquals(
+                "OOPS!!! Saved tasks could not be loaded. "
+                        + "Fix the data file before continuing. :(",
+                eva.getResponse("todo read book"));
+        assertEquals("See you soon. One task at a time!",
+                eva.getResponse("bye"));
+        assertEquals("not a task", Files.readString(dataFile));
     }
 }

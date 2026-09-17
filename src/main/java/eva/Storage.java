@@ -34,7 +34,7 @@ public class Storage {
     public ArrayList<Task> load() throws EvaException {
         ArrayList<Task> tasks = new ArrayList<>();
 
-        if (!Files.exists(filePath)) {
+        if (Files.notExists(filePath)) {
             return tasks;
         }
 
@@ -60,7 +60,9 @@ public class Storage {
      */
     public void save(TaskList tasks) throws EvaException {
         try {
-            Files.createDirectories(filePath.getParent());
+            if (filePath.getParent() != null) {
+                Files.createDirectories(filePath.getParent());
+            }
 
             ArrayList<String> lines = new ArrayList<>();
             for (int i = 0; i < tasks.size(); i++) {

@@ -29,6 +29,12 @@ public class Parser {
      * @throws EvaException If the command format is invalid or unknown.
      */
     public static ParsedCommand parse(String input) throws EvaException {
+        if (input == null || input.isBlank()) {
+            throw new EvaException("Please enter a command.");
+        }
+
+        input = input.strip().replaceAll("\\s+", " ");
+
         if (input.equals("bye")) {
             return new ParsedCommand(CommandType.BYE);
         }
@@ -41,31 +47,31 @@ public class Parser {
             return new ParsedCommand(CommandType.SORT);
         }
 
-        if (input.startsWith("mark")) {
+        if (input.equals("mark") || input.startsWith("mark ")) {
             return parseTaskNumber(input, "mark", CommandType.MARK);
         }
 
-        if (input.startsWith("unmark")) {
+        if (input.equals("unmark") || input.startsWith("unmark ")) {
             return parseTaskNumber(input, "unmark", CommandType.UNMARK);
         }
 
-        if (input.startsWith("delete")) {
+        if (input.equals("delete") || input.startsWith("delete ")) {
             return parseTaskNumber(input, "delete", CommandType.DELETE);
         }
 
-        if (input.startsWith("todo")) {
+        if (input.equals("todo") || input.startsWith("todo ")) {
             return parseTodo(input);
         }
 
-        if (input.startsWith("deadline")) {
+        if (input.equals("deadline") || input.startsWith("deadline ")) {
             return parseDeadline(input);
         }
 
-        if (input.startsWith("event")) {
+        if (input.equals("event") || input.startsWith("event ")) {
             return parseEvent(input);
         }
 
-        if (input.startsWith("find")) {
+        if (input.equals("find") || input.startsWith("find ")) {
             return parseFind(input);
         }
 
@@ -82,9 +88,15 @@ public class Parser {
                             + commandWord + ".");
         }
 
-        int taskNumber = Integer.parseInt(
-                input.substring(commandWord.length() + 1));
-        return new ParsedCommand(commandType, taskNumber);
+        try {
+            int taskNumber = Integer.parseInt(
+                    input.substring(commandWord.length() + 1));
+            return new ParsedCommand(commandType, taskNumber);
+        } catch (NumberFormatException e) {
+            throw new EvaException(
+                    "Please specify a valid task number to "
+                            + commandWord + ".");
+        }
     }
 
     private static ParsedCommand parseTodo(String input)

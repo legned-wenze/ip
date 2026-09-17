@@ -12,6 +12,7 @@ public class Eva {
     private final Storage storage;
     private final Ui ui;
     private TaskList tasks;
+    private boolean dataLoadFailed;
 
     /**
      * Creates an Eva application that stores tasks at the specified path.
@@ -27,6 +28,7 @@ public class Eva {
         } catch (EvaException e) {
             ui.showResponse("OOPS!!! " + e.getMessage() + " :(");
             this.tasks = new TaskList();
+            this.dataLoadFailed = true;
         }
     }
 
@@ -40,7 +42,7 @@ public class Eva {
         while (!isExit) {
             String input = ui.readCommand();
             ui.showResponse(getResponse(input));
-            isExit = input.equals("bye");
+            isExit = input.strip().equals("bye");
         }
 
         ui.close();
@@ -54,7 +56,16 @@ public class Eva {
      */
     public String getResponse(String input) {
         try {
-            return execute(Parser.parse(input));
+            Parser.ParsedCommand command = Parser.parse(input);
+            if (dataLoadFailed) {
+                if (command.getType() == Parser.CommandType.BYE) {
+                    return ui.getByeMessage();
+                }
+                throw new EvaException(
+                        "Saved tasks could not be loaded. "
+                                + "Fix the data file before continuing.");
+            }
+            return execute(command);
         } catch (EvaException | IllegalArgumentException e) {
             return "OOPS!!! " + e.getMessage() + " :(";
         }
