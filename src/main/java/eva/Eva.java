@@ -25,7 +25,7 @@ public class Eva {
         try {
             this.tasks = new TaskList(storage.load());
         } catch (EvaException e) {
-            ui.showResponse("OOPS!!! " + e.getMessage());
+            ui.showResponse("OOPS!!! " + e.getMessage() + " :(");
             this.tasks = new TaskList();
         }
     }
@@ -56,7 +56,7 @@ public class Eva {
         try {
             return execute(Parser.parse(input));
         } catch (EvaException | IllegalArgumentException e) {
-            return "OOPS!!! " + e.getMessage();
+            return "OOPS!!! " + e.getMessage() + " :(";
         }
     }
 

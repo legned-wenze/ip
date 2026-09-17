@@ -43,7 +43,7 @@ public class MainWindow extends AnchorPane {
         this.eva = eva;
         dialogContainer.getChildren().add(
                 DialogBox.getEvaDialog(
-                        "Hello! I'm Eva.\nWhat can I do for you?",
+                        "Hello, I'm Eva.\nLet's take tasks one step at a time.",
                         EVA_AVATAR));
     }
 

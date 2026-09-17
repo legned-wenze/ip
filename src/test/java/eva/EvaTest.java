@@ -18,9 +18,9 @@ public class EvaTest {
         String response = eva.getResponse("todo read book");
 
         assertEquals(
-                "Got it. I've added this task:\n"
+                "All set! I've added this task:\n"
                         + "  [T][ ] read book\n"
-                        + "Now you have 1 tasks in the list.",
+                        + "You have 1 task on your list.",
                 response.replace(System.lineSeparator(), "\n"));
     }
 
@@ -29,7 +29,7 @@ public class EvaTest {
         Eva eva = new Eva(tempDirectory.resolve("eva.txt").toString());
 
         assertEquals(
-                "OOPS!!! I'm sorry, but I don't know what that means.",
+                "OOPS!!! I'm sorry, but I don't know what that means. :(",
                 eva.getResponse("hello"));
     }
 
@@ -42,7 +42,7 @@ public class EvaTest {
         String response = eva.getResponse("sort");
 
         assertEquals(
-                "Here are the tasks in your list:\n"
+                "Here's your task list:\n"
                         + "1.[D][ ] attend meeting (by: Sep 15 2026)\n"
                         + "2.[D][ ] submit report (by: Sep 30 2026)",
                 response.replace(System.lineSeparator(), "\n"));

@@ -22,8 +22,8 @@ public class Ui {
      */
     public void showWelcome() {
         System.out.println(joinLines(
-                "Hello! I'm Eva.",
-                "What can I do for you?"));
+                "Hello, I'm Eva.",
+                "Let's take tasks one step at a time."));
     }
 
     /**
@@ -51,7 +51,7 @@ public class Ui {
      * @return Formatted task-list message.
      */
     public String getTaskListMessage(TaskList tasks) {
-        return getTaskListing("Here are the tasks in your list:", tasks);
+        return getTaskListing("Here's your task list:", tasks);
     }
 
     /**
@@ -62,7 +62,7 @@ public class Ui {
      */
     public String getMatchingTasksMessage(TaskList tasks) {
         return getTaskListing(
-                "Here are the matching tasks in your list:", tasks);
+                "Here's what I found:", tasks);
     }
 
     /**
@@ -74,7 +74,7 @@ public class Ui {
      */
     public String getAddedTaskMessage(Task task, int taskCount) {
         return joinLines(
-                "Got it. I've added this task:",
+                "All set! I've added this task:",
                 "  " + task,
                 getTaskCountMessage(taskCount));
     }
@@ -88,7 +88,7 @@ public class Ui {
      */
     public String getDeletedTaskMessage(Task task, int taskCount) {
         return joinLines(
-                "Noted. I've removed this task:",
+                "All set! I've removed this task:",
                 "  " + task,
                 getTaskCountMessage(taskCount));
     }
@@ -101,7 +101,7 @@ public class Ui {
      */
     public String getMarkedTaskMessage(Task task) {
         return joinLines(
-                "Nice! I've marked this task as done:",
+                "Well done! This task is complete! :)",
                 "  " + task);
     }
 
@@ -113,7 +113,7 @@ public class Ui {
      */
     public String getUnmarkedTaskMessage(Task task) {
         return joinLines(
-                "OK, I've marked this task as not done yet:",
+                "No problem. This task is pending again:",
                 "  " + task);
     }
 
@@ -123,7 +123,7 @@ public class Ui {
      * @return Farewell message.
      */
     public String getByeMessage() {
-        return "Bye. Hope to see you again soon!";
+        return "See you soon. One task at a time!";
     }
 
     /**
@@ -145,7 +145,9 @@ public class Ui {
     }
 
     private String getTaskCountMessage(int taskCount) {
-        return "Now you have " + taskCount + " tasks in the list.";
+        return "You have " + taskCount
+                + (taskCount == 1 ? " task" : " tasks")
+                + " on your list.";
     }
 
     /**
