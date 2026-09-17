@@ -56,6 +56,13 @@ public class DialogBox extends HBox {
      */
     public static DialogBox getEvaDialog(String text, String speaker) {
         DialogBox dialogBox = new DialogBox(text, speaker);
+        if (text.startsWith("OOPS!!!")) {
+            dialogBox.dialog.setStyle(
+                    "-fx-background-color: #fce8e6; "
+                            + "-fx-background-radius: 8; "
+                            + "-fx-padding: 10; "
+                            + "-fx-text-fill: #8b1e1e;");
+        }
         dialogBox.flip();
         return dialogBox;
     }
