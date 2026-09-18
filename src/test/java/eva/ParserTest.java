@@ -77,4 +77,65 @@ public class ParserTest {
         assertEquals("Please specify a valid task number to mark.",
                 error.getMessage());
     }
+
+    @Test
+    void parseSimpleCommands_returnsCorrectTypes() throws EvaException {
+        assertEquals(Parser.CommandType.BYE,
+                Parser.parse("bye").getType());
+        assertEquals(Parser.CommandType.LIST,
+                Parser.parse("list").getType());
+        assertEquals(Parser.CommandType.SORT,
+                Parser.parse("sort").getType());
+    }
+
+    @Test
+    void parseUnmarkAndDelete_returnsTaskNumbers() throws EvaException {
+        Parser.ParsedCommand unmark = Parser.parse("unmark 2");
+        Parser.ParsedCommand delete = Parser.parse("delete 4");
+
+        assertEquals(Parser.CommandType.UNMARK, unmark.getType());
+        assertEquals(2, unmark.getTaskNumber());
+        assertEquals(Parser.CommandType.DELETE, delete.getType());
+        assertEquals(4, delete.getTaskNumber());
+    }
+
+    @Test
+    void parseEvent_returnsDescriptionAndTimes() throws EvaException {
+        Parser.ParsedCommand command = Parser.parse(
+                "event team meeting /from 09:00 /to 10:00");
+
+        assertEquals(Parser.CommandType.EVENT, command.getType());
+        assertEquals("team meeting", command.getValue(0));
+        assertEquals("09:00", command.getValue(1));
+        assertEquals("10:00", command.getValue(2));
+    }
+
+    @Test
+    void parseFind_returnsKeyword() throws EvaException {
+        Parser.ParsedCommand command = Parser.parse("find report");
+
+        assertEquals(Parser.CommandType.FIND, command.getType());
+        assertEquals("report", command.getValue(0));
+    }
+
+    @Test
+    void parseMissingArguments_throwsEvaException() {
+        assertThrows(EvaException.class, () -> Parser.parse("todo"));
+        assertThrows(EvaException.class, () -> Parser.parse("find"));
+        assertThrows(EvaException.class, () -> Parser.parse("mark"));
+        assertThrows(EvaException.class, () -> Parser.parse("event meeting"));
+    }
+
+    @Test
+    void parseInvalidCommandFormats_throwsEvaException() {
+        assertThrows(EvaException.class, () -> Parser.parse("mark abc"));
+        assertThrows(EvaException.class, () -> Parser.parse("sort now"));
+        assertThrows(EvaException.class, () -> Parser.parse("marking 2"));
+        assertThrows(EvaException.class, () -> Parser.parse("event meeting /from 09:00"));
+    }
+
+    @Test
+    void parseNullCommand_throwsEvaException() {
+        assertThrows(EvaException.class, () -> Parser.parse(null));
+    }
 }
