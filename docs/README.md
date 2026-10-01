@@ -26,11 +26,36 @@
 | Delete a task | `delete NUMBER` | `delete 1` |
 | Find tasks by description | `find KEYWORD` | `find report` |
 | Sort deadlines by date | `sort` | `sort` |
+| Ask AI about Eva's features | `@ai QUESTION` | `@ai how do I add a deadline?` |
 | Exit Eva | `bye` | `bye` |
 
 Use the task numbers shown by `list` when marking, unmarking, or deleting tasks. Deadline dates must use `YYYY-MM-DD`. `sort` puts deadlines first, from earliest to latest; other tasks follow. `find` ignores letter case and numbers its results separately from the full list.
 
 Eva automatically saves changes in `data/eva.txt`, relative to the folder from which you run the app, and loads them when it starts. Invalid commands produce a red error message. If the saved data file is damaged, Eva will not overwrite it; fix the file before changing tasks.
+
+## Optional AI help
+
+The `@ai` command asks a remote AI service questions about Eva's features. It is read-only and never changes your tasks. Ordinary commands continue to work without an API key.
+
+To enable it, create a free Groq API key at [console.groq.com](https://console.groq.com), store the key in the `LLM_API_KEY` environment variable, and then start Eva from the same terminal. Do not put the key in source code or commit it to Git.
+
+In Windows Command Prompt:
+
+```text
+set LLM_API_KEY=your_api_key_here
+java -jar eva.jar
+```
+
+In PowerShell:
+
+```text
+$env:LLM_API_KEY="your_api_key_here"
+java -jar eva.jar
+```
+
+Example: `@ai is there a command to add priorities to tasks?`
+
+If the key is missing, invalid, or the service cannot be reached, Eva shows an error while the rest of the app remains usable. AI answers can be inaccurate, so use the command descriptions in this guide as the authoritative reference.
 
 ## Running Eva
 
