@@ -18,7 +18,8 @@ public class Parser {
         DEADLINE,
         EVENT,
         FIND,
-        SORT
+        SORT,
+        AI
     }
 
     /**
@@ -73,6 +74,10 @@ public class Parser {
 
         if (input.equals("find") || input.startsWith("find ")) {
             return parseFind(input);
+        }
+
+        if (input.equals("@ai") || input.startsWith("@ai ")) {
+            return parseAi(input);
         }
 
         throw new EvaException(
@@ -180,6 +185,18 @@ public class Parser {
 
         String keyword = input.substring(5).trim();
         return new ParsedCommand(CommandType.FIND, keyword);
+    }
+
+    private static ParsedCommand parseAi(String input)
+            throws EvaException {
+        if (!input.startsWith("@ai ")
+                || input.substring(3).trim().isEmpty()) {
+            throw new EvaException(
+                    "Please enter a question after @ai.");
+        }
+
+        String question = input.substring(4).trim();
+        return new ParsedCommand(CommandType.AI, question);
     }
 
     /**
