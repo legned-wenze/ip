@@ -119,11 +119,21 @@ public class ParserTest {
     }
 
     @Test
+    void parseAi_returnsQuestion() throws EvaException {
+        Parser.ParsedCommand command = Parser.parse(
+                "@ai how do I add a deadline?");
+
+        assertEquals(Parser.CommandType.AI, command.getType());
+        assertEquals("how do I add a deadline?", command.getValue(0));
+    }
+
+    @Test
     void parseMissingArguments_throwsEvaException() {
         assertThrows(EvaException.class, () -> Parser.parse("todo"));
         assertThrows(EvaException.class, () -> Parser.parse("find"));
         assertThrows(EvaException.class, () -> Parser.parse("mark"));
         assertThrows(EvaException.class, () -> Parser.parse("event meeting"));
+        assertThrows(EvaException.class, () -> Parser.parse("@ai"));
     }
 
     @Test
