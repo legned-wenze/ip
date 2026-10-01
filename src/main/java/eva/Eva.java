@@ -9,8 +9,27 @@ import eva.task.Todo;
  * Runs the Eva task management application.
  */
 public class Eva {
+    private static final String FEATURE_HELP_PROMPT =
+            "You help users of Eva, a desktop task manager. "
+                    + "Answer only about Eva's features using the commands "
+                    + "below. Be concise and use no more than two sentences.\n\n"
+                    + "todo DESCRIPTION - adds a todo.\n"
+                    + "deadline DESCRIPTION /by YYYY-MM-DD - adds a deadline.\n"
+                    + "event DESCRIPTION /from START /to END - adds an event.\n"
+                    + "list - lists all tasks.\n"
+                    + "mark NUMBER - marks a task as done.\n"
+                    + "unmark NUMBER - marks a task as not done.\n"
+                    + "delete NUMBER - deletes a task.\n"
+                    + "find KEYWORD - searches task descriptions.\n"
+                    + "sort - sorts deadlines chronologically.\n"
+                    + "bye - saves tasks and exits.\n"
+                    + "@ai QUESTION - asks about Eva's features.\n"
+                    + "Eva saves tasks automatically in data/eva.txt. "
+                    + "It has no priority or reminder feature.";
+
     private final Storage storage;
     private final Ui ui;
+    private final AiHelper aiHelper;
     private TaskList tasks;
     private boolean dataLoadFailed;
 
@@ -20,8 +39,13 @@ public class Eva {
      * @param filePath Path of the task data file.
      */
     public Eva(String filePath) {
+        this(filePath, new AiHelper());
+    }
+
+    Eva(String filePath, AiHelper aiHelper) {
         this.ui = new Ui();
         this.storage = new Storage(filePath);
+        this.aiHelper = aiHelper;
 
         try {
             this.tasks = new TaskList(storage.load());
@@ -126,6 +150,10 @@ public class Eva {
                 tasks.sort();
                 storage.save(tasks);
                 return ui.getTaskListMessage(tasks);
+
+            case AI:
+                return aiHelper.getAiResponse(
+                        FEATURE_HELP_PROMPT, command.getValue(0));
 
             default:
                 throw new EvaException("Unknown command.");
