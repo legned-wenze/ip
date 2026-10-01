@@ -133,4 +133,34 @@ public class EvaTest {
                 eva.getResponse("bye"));
         assertTrue(Files.exists(dataFile));
     }
+
+    @Test
+    void getResponse_aiQuestion_returnsAiAnswer() {
+        AiHelper aiHelper = new AiHelper("") {
+            @Override
+            public String getAiResponse(
+                    String systemPrompt, String userPrompt) {
+                assertTrue(systemPrompt.contains("deadline DESCRIPTION"));
+                assertEquals("how do I add a deadline?", userPrompt);
+                return "Use deadline DESCRIPTION /by YYYY-MM-DD.";
+            }
+        };
+        Eva eva = new Eva(
+                tempDirectory.resolve("eva.txt").toString(), aiHelper);
+
+        assertEquals("Use deadline DESCRIPTION /by YYYY-MM-DD.",
+                eva.getResponse("@ai how do I add a deadline?"));
+    }
+
+    @Test
+    void getResponse_aiWithoutKey_returnsSetupInstructions() {
+        Eva eva = new Eva(
+                tempDirectory.resolve("eva.txt").toString(),
+                new AiHelper(""));
+
+        assertEquals(
+                "OOPS!!! AI help needs an LLM_API_KEY. "
+                        + "See the User Guide for setup instructions. :(",
+                eva.getResponse("@ai what can Eva do?"));
+    }
 }
